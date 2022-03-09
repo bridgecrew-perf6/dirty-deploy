@@ -3,9 +3,6 @@ default:
   tags: 
     - loki.tel
 
-before_script:
-  - apt -y install wget sudo openssl gnupg lsb-release
-
 stages:
   - build
 
@@ -17,6 +14,7 @@ cache:
     - vendor/ruby
 
 before_script:
+  - apt -y install wget sudo openssl gnupg lsb-release
 
 dependencies:
   stage: build
