@@ -42,7 +42,8 @@ wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8C
 
 # Install puppet, tor, nyx, obfs4 and torprojects keyring
 apt-get update
-apt-get install --install-suggests -y puppet-agent tor nyx obfs4proxy deb.torproject.org-keyring
+apt-get install -y tor
+apt-get install --install-suggests -y puppet-agent nyx obfs4proxy deb.torproject.org-keyring
 
 # Print
 echo -e "\n\nThe following packages are now available:\n"
