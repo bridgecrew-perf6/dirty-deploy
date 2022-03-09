@@ -80,7 +80,7 @@ passwd debian-tor << EOF
 $PASSWORD
 $PASSWORD
 EOF
-
+which systemctl
 su - debian-tor -c "pwd; ls -la; whoami"
 su - debian-tor -c "echo $PASSWORD | sudo -S /usr/bin/systemctl status tor.service"
 
