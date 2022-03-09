@@ -28,6 +28,7 @@ PASSWORD=`openssl rand -base64 16`
 SYSTEMCTL=`which systemctl`
 
 # Prepare apt-get
+apt-get update
 apt-get -y install apt-utils apt-transport-https
 
 # If you run this in a docker
