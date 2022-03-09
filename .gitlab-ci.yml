@@ -3,6 +3,9 @@ default:
   tags: 
     - loki.tel
 
+before_script:
+  - apt -y install wget sudo openssl gnupg lsb-release
+
 stages:
   - build
 
