@@ -18,7 +18,7 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-#read -p "Puppetmaster: " PUPPETMASTER
+read -p "Puppetmaster: " PUPPETMASTER
 if [ -z $PUPPETMASTER ]; then
   PUPPETMASTER="mcp.loki.tel"
 fi
@@ -26,8 +26,6 @@ fi
 # Prepare apt-get
 apt-get update
 apt-get -y install apt-utils apt-transport-https
-
-# If you run this in a docker
 apt-get -y install wget sudo openssl gnupg lsb-release python3-dev cron
 
 CODENAME=`lsb_release --codename --short`
@@ -97,7 +95,7 @@ fi
 
 # Check tor status and run puppet 
 su - debian-tor -c "sudo $SYSTEMCTL status tor.service"
-#su - debian-tor -c "puppet agent --test --waitforcert 30"
+su - debian-tor -c "puppet agent --test --waitforcert 30"
 
 echo -e "Used variables:\n\nPUPPETMASTER=$PUPPETMASTER\nCODENAME=$CODENAME\nPASSWORD=$PASSWORD\nTHOME=$THOME\nSYSTEMCTL=$SYSTEMCTL"
 exit 0;
