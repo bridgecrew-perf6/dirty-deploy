@@ -83,7 +83,7 @@ passwd debian-tor << EOF
 $PASSWORD
 $PASSWORD
 EOF
-su - debian-tor -c "which tor"
+
 su - debian-tor -c "echo $PASSWORD | sudo -S $SYSTEMCTL status tor.service"
 
 if [ -f /root/sudo ]; then
