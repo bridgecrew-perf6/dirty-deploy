@@ -15,8 +15,8 @@ cache:
 
 before_script:
   - export DEBIAN_FRONTEND="noninteractive"
-  - apt update
-  - apt -y install wget sudo openssl gnupg lsb-release
+  - apt-get update
+  - apt-get --install-suggests -y install wget sudo openssl gnupg lsb-release
 
 dependencies:
   stage: build

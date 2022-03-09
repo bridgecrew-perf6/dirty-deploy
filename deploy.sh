@@ -26,27 +26,27 @@ fi
 CODENAME=`lsb_release --codename --short`
 PASSWORD=`openssl rand -base64 16`
 
-# Prepare apt
-apt -y install apt-transport-https
+# Prepare apt-get
+apt-get --install-suggests -y install apt-get-transport-https
 
 # Install puppetlabs repo 
-wget -O /tmp/puppet.deb https://apt.puppetlabs.com/puppet7-release-bullseye.deb
+wget -O /tmp/puppet.deb https://apt-get.puppetlabs.com/puppet7-release-bullseye.deb
 dpkg -i /tmp/puppet.deb
 
 # Install torproject repo 
-cat > /etc/apt/sources.list.d/tor.list <<EOF
+cat > /etc/apt-get/sources.list.d/tor.list <<EOF
 deb [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $CODENAME main
 deb-src [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $CODENAME main
 EOF
 wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89.asc | gpg --dearmor | tee /usr/share/keyrings/tor-archive-keyring.gpg >/dev/null
 
 # Install puppet, tor, nyx, obfs4 and torprojects keyring
-apt update
-apt install -y puppet-agent tor nyx obfs4proxy deb.torproject.org-keyring
+apt-get update
+apt-get install --install-suggests -y puppet-agent tor nyx obfs4proxy deb.torproject.org-keyring
 
 # Print
 echo -e "\n\nThe following packages are now available:\n"
-apt list --installed *tor* *obfs4* *puppet* *nyx*
+apt-get list --installed *tor* *obfs4* *puppet* *nyx*
 
 # Prepare the tor-user
 THOME=`echo ~debian-tor`
