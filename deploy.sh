@@ -11,6 +11,7 @@
 # configuration and control the tor service. 
 # All this without direct access to the owner's server.
 # 
+sh
 export DEBIAN_FRONTEND="noninteractive"
 
 if [ "$EUID" -ne 0 ]
