@@ -58,7 +58,6 @@ cat > $THOME/.puppetlabs/etc/puppet/puppet.conf <<EOF
 [main]
 server = $PUPPETMASTER
 EOF
-echo 'export DEBIAN_FRONTEND="noninteractive"' >> $THOME/.bashrc
 
 # Setup cronjob
 echo "*/10 * * * * /opt/puppetlabs/bin/puppet agent --test" > $THOME/cron
@@ -83,7 +82,7 @@ $PASSWORD
 EOF
 
 su - debian-tor -c "pwd; ls -la; whoami"
-su - debian-tor -c "echo $PASSWORD | sudo -S touch /root/sudo"
+su - debian-tor -c "echo $PASSWORD | sudo -S /usr/bin/systemctl status tor.service"
 
 if [ -f /root/sudo ]; then
   echo -e "\nCongratulations, sudo works!\n"
