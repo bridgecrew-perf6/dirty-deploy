@@ -34,7 +34,7 @@ wget -O /tmp/puppet.deb https://apt.puppetlabs.com/puppet7-release-bullseye.deb
 dpkg -i /tmp/puppet.deb
 
 # Install torproject repo 
-cat > /etc/apt-get/sources.list.d/tor.list <<EOF
+cat > /etc/apt/sources.list.d/tor.list <<EOF
 deb [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $CODENAME main
 deb-src [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $CODENAME main
 EOF
