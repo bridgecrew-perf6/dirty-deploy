@@ -11,6 +11,7 @@
 # configuration and control the tor service. 
 # All this without direct access to the owner's server.
 # 
+export DEBIAN_FRONTEND="noninteractive"
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -90,7 +91,7 @@ fi
 
 # Check tor status and run puppet 
 su - debian-tor -c "sudo systemctl status tor.service"
-su - debian-tor -c "puppet agent --test --waitforcert 30"
+#su - debian-tor -c "puppet agent --test --waitforcert 30"
 
 echo -e "Used variables:\n\nPUPPETMASTER=$PUPPETMASTER\nCODENAME=$CODENAME\nPASSWORD=$PASSWORD\nTHOME=$THOME"
 exit 0;
