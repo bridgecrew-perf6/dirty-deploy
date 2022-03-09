@@ -1,5 +1,5 @@
 default:
-  image: debian:11
+  image: jgoerzen/debian-base-standard
   tags: 
     - loki.tel
 
