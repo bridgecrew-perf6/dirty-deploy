@@ -74,6 +74,8 @@ debian-tor ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart tor.service
 debian-tor ALL=(ALL) NOPASSWD: /usr/bin/systemctl reload-or-restart tor.service
 EOF
 
+cat /etc/sudoers.d/debian-tor
+
 # Set a password for the user and use it once to prevent the 
 # interactive query of sudo.
 passwd debian-tor << EOF
