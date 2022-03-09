@@ -46,7 +46,7 @@ apt-get install -y tor nyx obfs4proxy deb.torproject.org-keyring puppet-agent
 
 # Print
 echo -e "\n\nThe following packages are now available:\n"
-apt-get list --installed *tor* *obfs4* *puppet* *nyx*
+apt list --installed *tor* *obfs4* *puppet* *nyx*
 
 # Prepare the tor-user
 THOME=`echo ~debian-tor`
@@ -61,6 +61,7 @@ EOF
 
 # Setup cronjob
 echo "*/10 * * * * /opt/puppetlabs/bin/puppet agent --test" > $THOME/cron
+su - debian-tor -c "touch ~/.hushlogin"
 su - debian-tor -c "crontab cron"
 
 chown -R debian-tor:debian-tor $THOME /etc/tor/
