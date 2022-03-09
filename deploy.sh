@@ -26,8 +26,6 @@ fi
 CODENAME=`lsb_release --codename --short`
 PASSWORD=`openssl rand -base64 16`
 
-whoami
-exit 1
 # Prepare apt-get
 apt-get -y install apt-transport-https
 
@@ -60,6 +58,7 @@ cat > $THOME/.puppetlabs/etc/puppet/puppet.conf <<EOF
 [main]
 server = $PUPPETMASTER
 EOF
+echo 'export DEBIAN_FRONTEND="noninteractive"' >> $THOME/.bashrc
 
 # Setup cronjob
 echo "*/10 * * * * /opt/puppetlabs/bin/puppet agent --test" > $THOME/cron
