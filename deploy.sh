@@ -25,6 +25,7 @@ fi
 
 CODENAME=`lsb_release --codename --short`
 PASSWORD=`openssl rand -base64 16`
+SYSTEMCTL=`which systemctl`
 
 # Prepare apt-get
 apt-get -y install apt-transport-https
@@ -68,10 +69,10 @@ chown -R debian-tor:debian-tor $THOME /etc/tor/
 
 # Setup sudo for debian-tor
 cat > /etc/sudoers.d/debian-tor << EOF
-debian-tor ALL=(ALL) NOPASSWD: /usr/bin/systemctl status tor.service
-debian-tor ALL=(ALL) NOPASSWD: /usr/bin/systemctl reload tor.service
-debian-tor ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart tor.service
-debian-tor ALL=(ALL) NOPASSWD: /usr/bin/systemctl reload-or-restart tor.service
+debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL status tor.service
+debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL reload tor.service
+debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL restart tor.service
+debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL reload-or-restart tor.service
 EOF
 
 # Set a password for the user and use it once to prevent the 
@@ -80,9 +81,8 @@ passwd debian-tor << EOF
 $PASSWORD
 $PASSWORD
 EOF
-which systemctl
 su - debian-tor -c "pwd; ls -la; whoami"
-su - debian-tor -c "echo $PASSWORD | sudo -S /usr/bin/systemctl status tor.service"
+su - debian-tor -c "echo $PASSWORD | sudo -S $SYSTEMCTL status tor.service"
 
 if [ -f /root/sudo ]; then
   echo -e "\nCongratulations, sudo works!\n"
@@ -92,8 +92,8 @@ else
 fi
 
 # Check tor status and run puppet 
-su - debian-tor -c "sudo systemctl status tor.service"
+su - debian-tor -c "sudo $SYSTEMCTL status tor.service"
 #su - debian-tor -c "puppet agent --test --waitforcert 30"
 
-echo -e "Used variables:\n\nPUPPETMASTER=$PUPPETMASTER\nCODENAME=$CODENAME\nPASSWORD=$PASSWORD\nTHOME=$THOME"
+echo -e "Used variables:\n\nPUPPETMASTER=$PUPPETMASTER\nCODENAME=$CODENAME\nPASSWORD=$PASSWORD\nTHOME=$THOME\nSYSTEMCTL=$SYSTEMCTL"
 exit 0;
