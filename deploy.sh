@@ -28,7 +28,10 @@ PASSWORD=`openssl rand -base64 16`
 SYSTEMCTL=`which systemctl`
 
 # Prepare apt-get
-apt-get -y install apt-transport-https
+apt-get -y install apt-utils apt-transport-https
+
+# If you run this in a docker
+apt-get -y install wget sudo openssl gnupg lsb-release python3-dev
 
 # Install puppetlabs repo 
 wget -O /tmp/puppet.deb https://apt.puppetlabs.com/puppet7-release-bullseye.deb
@@ -81,7 +84,7 @@ passwd debian-tor << EOF
 $PASSWORD
 $PASSWORD
 EOF
-su - debian-tor -c "pwd; ls -la; whoami"
+su - debian-tor -c "service status tor"
 su - debian-tor -c "echo $PASSWORD | sudo -S $SYSTEMCTL status tor.service"
 
 if [ -f /root/sudo ]; then
