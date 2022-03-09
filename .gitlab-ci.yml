@@ -1,5 +1,5 @@
 default:
-  image: jgoerzen/debian-base-standard
+  image: jrei/systemd-debian
   tags: 
     - loki.tel
 
