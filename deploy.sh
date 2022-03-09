@@ -27,7 +27,7 @@ CODENAME=`lsb_release --codename --short`
 PASSWORD=`openssl rand -base64 16`
 
 # Prepare apt-get
-apt-get --install-suggests -y install apt-get-transport-https
+apt-get -y install apt-get-transport-https
 
 # Install puppetlabs repo 
 wget -O /tmp/puppet.deb https://apt-get.puppetlabs.com/puppet7-release-bullseye.deb
@@ -42,8 +42,7 @@ wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8C
 
 # Install puppet, tor, nyx, obfs4 and torprojects keyring
 apt-get update
-apt-get install -y tor nyx obfs4proxy deb.torproject.org-keyring
-apt-get install --install-suggests -y puppet-agent
+apt-get install -y tor nyx obfs4proxy deb.torproject.org-keyring puppet-agent
 
 # Print
 echo -e "\n\nThe following packages are now available:\n"
