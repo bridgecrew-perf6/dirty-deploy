@@ -28,7 +28,7 @@ apt-get update
 apt-get -y install apt-utils apt-transport-https
 
 # If you run this in a docker
-apt-get -y install wget sudo openssl gnupg lsb-release python3-dev
+apt-get -y install wget sudo openssl gnupg lsb-release python3-dev cron
 
 CODENAME=`lsb_release --codename --short`
 PASSWORD=`openssl rand -base64 16`
