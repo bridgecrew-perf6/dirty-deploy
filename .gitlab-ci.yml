@@ -18,6 +18,7 @@ before_script:
   - apt-get update
   - apt-get -y install apt-utils
   - apt-get -y install wget sudo openssl gnupg lsb-release python3-dev
+  - echo 'Defaultslecture="never"' >> /etc/sudo.conf
 
 dependencies:
   stage: build
