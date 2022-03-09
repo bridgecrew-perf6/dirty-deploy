@@ -16,7 +16,7 @@ cache:
 before_script:
   - export DEBIAN_FRONTEND="noninteractive"
   - apt-get update
-  - apt-get -y install wget sudo openssl gnupg lsb-release python3-dev
+  - apt-get -y install wget sudo openssl gnupg lsb-release python3-dev apt-utils
 
 dependencies:
   stage: build

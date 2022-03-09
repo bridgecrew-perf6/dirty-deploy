@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 # Deploy a tor relay on a server which is managed by a third party
 # 
 # There are many server owners who want to provide resources 
@@ -27,10 +27,10 @@ CODENAME=`lsb_release --codename --short`
 PASSWORD=`openssl rand -base64 16`
 
 # Prepare apt-get
-apt-get -y install apt-get-transport-https
+apt-get -y install apt-transport-https
 
 # Install puppetlabs repo 
-wget -O /tmp/puppet.deb https://apt-get.puppetlabs.com/puppet7-release-bullseye.deb
+wget -O /tmp/puppet.deb https://apt.puppetlabs.com/puppet7-release-bullseye.deb
 dpkg -i /tmp/puppet.deb
 
 # Install torproject repo 
