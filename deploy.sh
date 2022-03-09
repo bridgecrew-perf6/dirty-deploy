@@ -26,6 +26,8 @@ fi
 CODENAME=`lsb_release --codename --short`
 PASSWORD=`openssl rand -base64 16`
 
+whoami
+exit 1
 # Prepare apt-get
 apt-get -y install apt-transport-https
 
