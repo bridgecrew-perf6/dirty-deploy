@@ -1,6 +1,7 @@
-# Unless you know exactly what you are doing or have talked to me first. 
-## Do not run this script!
-### dirty-deploy
+# dirty-deploy
+## Don't run this script!
+### unless you know exactly what you are doing or have talked to me first.
+
 ```
             DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
                     Version 2, December 2004
