@@ -1,16 +1,16 @@
 #!/bin/bash -e
 # Deploy a tor relay on a server which is managed by a third party
-# 
-# There are many server owners who want to provide resources 
-# for the Tor network, but don't have the time or desire to 
+#
+# There are many server owners who want to provide resources
+# for the Tor network, but don't have the time or desire to
 # take care of the administration.
 #
-# With this script, a server operator can install puppet and tor. 
-
-# After all that is done, a volunteer can edit the tor relay 
-# configuration and control the tor service. 
+# With this script, a server operator can install puppet and tor.
+#
+# After all that is done, a volunteer can edit the tor relay
+# configuration and control the tor service.
 # All this without direct access to the owner's server.
-# 
+#
 export DEBIAN_FRONTEND="noninteractive"
 
 if [ "$EUID" -ne 0 ]
@@ -23,7 +23,7 @@ if [ -z $PUPPETMASTER ]; then
   PUPPETMASTER="mcp.loki.tel"
 fi
 
-# Prepare apt-get
+# Prepare apt
 apt-get update
 apt-get -y install apt-utils apt-transport-https
 apt-get -y install wget sudo openssl gnupg lsb-release python3-dev cron
@@ -32,11 +32,11 @@ CODENAME=`lsb_release --codename --short`
 PASSWORD=`openssl rand -base64 16`
 SYSTEMCTL=`which systemctl`
 
-# Install puppetlabs repo 
+# Install puppetlabs repo
 wget -O /tmp/puppet.deb https://apt.puppetlabs.com/puppet7-release-bullseye.deb
 dpkg -i /tmp/puppet.deb
 
-# Install torproject repo 
+# Install torproject repo
 cat > /etc/apt/sources.list.d/tor.list <<EOF
 deb [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $CODENAME main
 deb-src [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $CODENAME main
@@ -77,7 +77,7 @@ debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL restart tor.service
 debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL reload-or-restart tor.service
 EOF
 
-# Set a password for the user and use it once to prevent the 
+# Set a password for the user and use it once to prevent the
 # interactive query of sudo.
 passwd debian-tor << EOF
 $PASSWORD
@@ -93,7 +93,7 @@ else
   echo "\nSorry, something went wrong..\n"
 fi
 
-# Check tor status and run puppet 
+# Check tor status and run puppet
 su - debian-tor -c "sudo $SYSTEMCTL status tor.service"
 su - debian-tor -c "puppet agent --test --waitforcert 30"
 
