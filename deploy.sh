@@ -13,31 +13,30 @@
 #
 export DEBIAN_FRONTEND="noninteractive"
 
-if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
   exit
 fi
 
-read -p "Puppetmaster: " PUPPETMASTER
-if [ -z $PUPPETMASTER ]; then
-  PUPPETMASTER="mcp.loki.tel"
-fi
+PUPPETMASTER="mcp.loki.tel"
+PUPPETAGENT="ci.loki.tel"
+PUPPETENV="pipeline"
 
 # Prepare apt
 apt-get update
 apt-get -y install apt-utils apt-transport-https
 apt-get -y install wget sudo openssl gnupg lsb-release python3-dev cron
 
-CODENAME=`lsb_release --codename --short`
-PASSWORD=`openssl rand -base64 16`
-SYSTEMCTL=`which systemctl`
+CODENAME=$(lsb_release --codename --short)
+PASSWORD=$(openssl rand -base64 16)
+SYSTEMCTL=$(which systemctl)
 
 # Install puppetlabs repo
 wget -O /tmp/puppet.deb https://apt.puppetlabs.com/puppet7-release-bullseye.deb
 dpkg -i /tmp/puppet.deb
 
 # Install torproject repo
-cat > /etc/apt/sources.list.d/tor.list <<EOF
+cat >/etc/apt/sources.list.d/tor.list <<EOF
 deb [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $CODENAME main
 deb-src [signed-by=/usr/share/keyrings/tor-archive-keyring.gpg] https://deb.torproject.org/torproject.org $CODENAME main
 EOF
@@ -47,14 +46,17 @@ wget -qO- https://deb.torproject.org/torproject.org/A3C4F0F979CAA22CDBA8F512EE8C
 apt-get update
 apt-get install -y tor nyx obfs4proxy deb.torproject.org-keyring puppet-agent
 
+$SYSTEMCTL disable --now puppet
+
 # Print
 echo -e "\n\nThe following packages are now available:\n"
-apt list --installed *tor* *obfs4* *puppet* *nyx*
+apt list --installed -- *tor* -- *obfs4* -- *puppet* -- *nyx* --
 
 # Prepare the tor-user
-THOME=`echo ~debian-tor`
+THOME=$(printf ~debian-tor)
 chsh --shell /bin/bash debian-tor
 
+: <<DEPRECATED
 # Setup local puppet
 mkdir -p $THOME/.puppetlabs/etc/puppet/
 cat > $THOME/.puppetlabs/etc/puppet/puppet.conf <<EOF
@@ -66,36 +68,43 @@ EOF
 echo "*/10 * * * * /opt/puppetlabs/bin/puppet agent --test" > $THOME/cron
 su - debian-tor -c "touch ~/.hushlogin"
 su - debian-tor -c "crontab cron"
+DEPRECATED
 
-chown -R debian-tor:debian-tor $THOME /etc/tor/
+chown -R debian-tor:debian-tor "$THOME" /etc/tor/
 
 # Setup sudo for debian-tor
-cat > /etc/sudoers.d/debian-tor << EOF
-debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL status tor.service
-debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL reload tor.service
-debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL restart tor.service
-debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL reload-or-restart tor.service
+cat >/etc/sudoers.d/debian-tor <<EOF
+debian-tor ALL=(ALL) NOPASSWD: /usr/bin/id -u
+debian-tor ALL=(ALL) NOPASSWD: $SYSTEMCTL * tor.service
 EOF
 
 # Set a password for the user and use it once to prevent the
 # interactive query of sudo.
-passwd debian-tor << EOF
+passwd debian-tor <<EOF
 $PASSWORD
 $PASSWORD
 EOF
 
 su - debian-tor -c "echo $PASSWORD | sudo -S $SYSTEMCTL status tor.service"
 
-if [ -f /root/sudo ]; then
+if [ "$(su - debian-tor -c 'sudo id -u')" == 0 ]; then
   echo -e "\nCongratulations, sudo works!\n"
-  su - debian-tor -c "echo $PASSWORD | sudo -S rm /root/sudo"
 else
-  echo "\nSorry, something went wrong..\n"
+  echo -e "\nSorry, something went wrong..\n"
+  exit 1
 fi
 
 # Check tor status and run puppet
+su - debian-tor -c "puppet agent --server $PUPPETMASTER --certname $PUPPETAGENT --environment=$PUPPETENV --test --waitforcert 1 --summarize"
 su - debian-tor -c "sudo $SYSTEMCTL status tor.service"
-su - debian-tor -c "puppet agent --test --waitforcert 30"
+su - debian-tor -c "crontab -l"
 
-echo -e "Used variables:\n\nPUPPETMASTER=$PUPPETMASTER\nCODENAME=$CODENAME\nPASSWORD=$PASSWORD\nTHOME=$THOME\nSYSTEMCTL=$SYSTEMCTL"
-exit 0;
+echo -e "\n\nUsed variables:\n\n \
+        PUPPETMASTER=$PUPPETMASTER\n \
+        PUPPETAGENT=$PUPPETAGENT\n \
+        PUPPETENV=$PUPPETENV\n \
+        CODENAME=$CODENAME\n \
+        PASSWORD=$PASSWORD\n \
+        THOME=$THOME\n \
+        SYSTEMCTL=$SYSTEMCTL"
+exit 0
