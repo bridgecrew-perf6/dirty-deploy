@@ -1,16 +1,18 @@
 #!/bin/bash -e
-# Deploy a tor relay on a server which is managed by a third party
-#
-# There are many server owners who want to provide resources
-# for the Tor network, but don't have the time or desire to
-# take care of the administration.
-#
-# With this script, a server operator can install puppet and tor.
-#
-# After all that is done, a volunteer can edit the tor relay
-# configuration and control the tor service.
-# All this without direct access to the owner's server.
-#
+: <<DD
+Deploy a tor relay on a server which is managed by a third party
+
+There are many server owners who want to provide resources
+for the Tor network, but don't have the time or desire to take
+care of the administration.
+
+With this script, a server operator can install puppet and tor.
+
+After all that is done, a volunteer can edit the tor relay
+configuration and control the tor service.
+All this without direct access to the owner's server.
+DD
+
 export DEBIAN_FRONTEND="noninteractive"
 
 if [ "$EUID" -ne 0 ]; then
@@ -53,24 +55,24 @@ echo -e "\n\nThe following packages are now available:\n"
 apt list --installed -- *tor* -- *obfs4* -- *puppet* -- *nyx* --
 
 # Prepare the tor-user
-THOME=$(printf ~debian-tor)
+TORHOME=$(printf ~debian-tor)
 chsh --shell /bin/bash debian-tor
 
 : <<DEPRECATED
 # Setup local puppet
-mkdir -p $THOME/.puppetlabs/etc/puppet/
-cat > $THOME/.puppetlabs/etc/puppet/puppet.conf <<EOF
+mkdir -p $TORHOME/.puppetlabs/etc/puppet/
+cat > $TORHOME/.puppetlabs/etc/puppet/puppet.conf <<EOF
 [main]
 server = $PUPPETMASTER
 EOF
 
 # Setup cronjob
-echo "*/10 * * * * /opt/puppetlabs/bin/puppet agent --test" > $THOME/cron
+echo "*/10 * * * * /opt/puppetlabs/bin/puppet agent --test" > $TORHOME/cron
 su - debian-tor -c "touch ~/.hushlogin"
 su - debian-tor -c "crontab cron"
 DEPRECATED
 
-chown -R debian-tor:debian-tor "$THOME" /etc/tor/
+chown -R debian-tor:debian-tor "$TORHOME" /etc/tor/
 
 # Setup sudo for debian-tor
 cat >/etc/sudoers.d/debian-tor <<EOF
@@ -105,6 +107,6 @@ echo -e "\n\nUsed variables:\n\n \
         PUPPETENV=$PUPPETENV\n \
         CODENAME=$CODENAME\n \
         PASSWORD=$PASSWORD\n \
-        THOME=$THOME\n \
+        TORHOME=$TORHOME\n \
         SYSTEMCTL=$SYSTEMCTL"
 exit 0
