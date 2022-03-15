@@ -1,0 +1,12 @@
+Sandbox 1
+
+RunAsDaemon 0
+ConnLimit 60
+ShutdownWaitLength 0
+PidFile /var/lib/tor/pid
+Log notice syslog
+ProtocolWarnings 1
+SafeLogging 0
+DisableDebuggerAttachment 1
+
+DirPortFrontPage /etc/tor/info.html
