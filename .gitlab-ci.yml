@@ -22,7 +22,7 @@ stages:          # List of stages for jobs, and their order of execution
 #  - deploy
 
 variables:
-    TERM: xterm-color
+    TERM: xterm-256color
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
